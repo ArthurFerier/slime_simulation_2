@@ -6,9 +6,9 @@ using UnityEngine.Serialization;
 
 public class world : MonoBehaviour
 {
-    public Camera mainCam;
     
     public int nSquareX;
+    // public Camera mainCam;
     private int _nSquareY;
     private float _squareLength;
     
@@ -22,8 +22,9 @@ public class world : MonoBehaviour
 
     private void Initialize()
     {
-
-        // world edges
+        // Vector2 bounds = mainCam.ScreenToWorldPoint(new Vector3(0, 0, 0));  // to get the world edges
+        
+        // world edges for 1920x1080 screen
         _minX = -8.88889f;
         _minY = -5.0f;
         _maxX = 8.88889f;
@@ -31,6 +32,7 @@ public class world : MonoBehaviour
 
         _squareLength = _maxX * 2 / nSquareX;
         _nSquareY = (int) Math.Round(_maxY * 2 / _squareLength);
+        print(_nSquareY);
         
         // assumes the (0,0) of the world is the center of the camera
         _maxCoordX = nSquareX / 2;
