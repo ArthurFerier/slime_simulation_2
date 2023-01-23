@@ -8,16 +8,39 @@ public class world : MonoBehaviour
 {
     
     public int nSquareX;
+
+    public RenderTexture tex;
+
+    public Camera activeCamera;
     // public Camera mainCam;
     private int _nSquareY;
     private float _squareLength;
     
     private float _minX, _minY, _maxX, _maxY;
     private int _maxCoordX, _maxCoordY;
+    
+    
+    public ComputeShader shader;
 
     private void Start()
     {
         Initialize();
+        
+        int kernelHandle = shader.FindKernel("RandomTest");
+        
+        activeCamera.targetTexture = tex;
+        activeCamera.Render();
+
+        tex.enableRandomWrite = true;
+        tex.Create();
+
+        shader.SetTexture(kernelHandle, "Texture", tex);
+        shader.SetInt("width", 256);
+        shader.SetInt("height", 256);
+        shader.Dispatch(kernelHandle, 256/8, 256/8, 1);
+
+        RenderTexture.active = tex;
+        activeCamera.Render();
     }
 
     private void Initialize()
@@ -32,7 +55,6 @@ public class world : MonoBehaviour
 
         _squareLength = _maxX * 2 / nSquareX;
         _nSquareY = (int) Math.Round(_maxY * 2 / _squareLength);
-        print(_nSquareY);
         
         // assumes the (0,0) of the world is the center of the camera
         _maxCoordX = nSquareX / 2;
