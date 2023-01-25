@@ -1,8 +1,6 @@
 #pragma kernel RandomTest
 
 RWTexture2D<float4> Texture;
-uint width;
-uint height;
 
 // Hash function www.cs.ubc.ca/~rbridson/docs/schechter-sca08-turbulence.pdf
 uint hash(uint state)
@@ -16,10 +14,14 @@ uint hash(uint state)
     return state;
 }
 
-[numthreads(16,1,1)]
+[numthreads(8,8,1)]
 void RandomTest(uint3 id : SV_DispatchThreadID)
 {
+    ////////// be careful with the threading of the project, or it will have non-full screen bugs
+    const int width = 1920;
+    const int height = 1080;
     // if the thread is outside the the texture bounds : exit
+    
     if (id.x < 0 || id.x > width || id.y < 0 || id.y > height)
     {
         return;
